@@ -1,0 +1,225 @@
+\documentclass[a4paper, 12pt]{article}
+
+\newcommand{\languages}{english, french}
+
+\input{include/head.tex}
+
+%%%%%%%%%%%%%%%%%%%
+
+\title{Projet 1: Algorithmes de tri}
+\newcommand{\subtitle}{Structure de données et algorithmes}
+\author{
+	Maxime \textsc{Meurisse}\\Valentin \textsc{Vermeylen}\\
+}
+\newcommand{\context}{2\ieme{} année de Bachelier Ingénieur Civil}
+\date{Année académique 2017-2018}
+
+%%%%%%%%%%%%%%%%%%%
+
+\renewcommand{\thesubsection}{\thesection.\alph{subsection}}
+
+%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+    \newgeometry{margin = 2.5cm}
+	\makeatletter
+	\begin{titlepage}
+		\begin{minipage}[t][0.425\textheight][t]{\textwidth}
+			\begin{center}
+				\includegraphics[height=0.15\textheight]{resources/pdf/logo-uliege.pdf}
+				\vfill
+				{\huge \textsc{Université de Liège}}
+				\vfill
+			\end{center}
+		\end{minipage}
+		\vfill
+		\begin{minipage}{\textwidth}
+			\hspace{6pt}
+			\begin{mdframed}[linewidth = 2pt, innertopmargin = 12pt, innerbottommargin = 12pt, leftline = false, rightline = false]
+				\begin{center}
+					{\huge \bfseries \@title}
+				\end{center}
+			\end{mdframed}
+			\hspace{6pt}
+		\end{minipage}
+		\vfill
+		\begin{minipage}[b][0.425\textheight][t]{\textwidth}
+			\begin{center}
+				{\LARGE \subtitle}
+				\vfill
+				{\large \@author\space}
+				\vfill
+				{\large \context \\[6pt] \@date}
+			\end{center}
+		\end{minipage}
+	\end{titlepage}
+	\makeatother
+	\restoregeometry
+	\section{Algorithmes vus au cours: analyse expérimentale}
+	\subsection{Temps d'exécution moyen}
+	Les algorithmes implémentés ont été testés sur des tableaux de différentes tailles, générés aléatoirement. Les temps reportés dans le tableau \ref{table:tab_time_1} sont des temps moyens établis sur base de 10 expériences.
+	\begin{table}[!h]
+	    \centering
+	    \begin{tabular}{|c|c|c|c|c|}
+	        \hline
+	        \textbf{N} & \texttt{InsertionSort} & \texttt{QuickSort} & \texttt{MergeSort} & \texttt{HeapSort}\\
+	        \hline
+	        \hline
+	        \(\SI{10}{}\) & \(\SI{0.000003}{}\) & \(\SI{0.000004}{}\) & \(\SI{0.000004}{}\) & \(\SI{0.000005}{}\)\\
+	        \(\SI{100}{}\) & \(\SI{0.000017}{}\) & \(\SI{0.000023}{}\) & \(\SI{0.000030}{}\) & \(\SI{0.000019}{}\)\\
+	        \(\SI{1000}{}\) & \(\SI{0.001576}{}\) & \(\SI{0.000226}{}\) & \(\SI{0.000292}{}\) & \(\SI{0.000395}{}\)\\
+	        \(\SI{10000}{}\) & \(\SI{0.117356}{}\) & \(\SI{0.002145}{}\) & \(\SI{0.002234}{}\) & \(\SI{0.003090}{}\)\\
+	        \(\SI{100000}{}\) & \(\SI{11.675235}{}\) & \(\SI{0.058665}{}\) & \(\SI{0.023543}{}\) & \(\SI{0.037855}{}\)\\
+	        \(\SI{1000000}{}\) & \(\SI{1177.404141}{}\) & \(\SI{4.462740}{}\) & \(\SI{0.267726}{}\) & \(\SI{0.496849}{}\)\\
+	        \hline
+	    \end{tabular}
+	    \caption{Temps d'exécution moyen, en secondes, des algorithmes de tri pour différentes tailles de tableaux.}
+	    \label{table:tab_time_1}
+	\end{table}
+	\subsection{Analyse des résultats}
+	\subsubsection*{Comparaison des algorithmes entre eux}
+	Pour de petits tableaux, tous les algorithmes se valent. Il n'y a pas de différence significative entre leur temps d'exécution.\par
+	Pour des tableaux contenant \(\SI{1000}{}\) éléments ou plus, l'algorithme \textsc{InsertionSort} devient beaucoup plus lent. Les autres algorithmes se valent toujours.\par
+	À partir de \(\SI{100000}{}\) éléments, des différences significatives apparaissent: \textsc{QuickSort} est devenu deux fois plus lent que \textsc{MergeSort}, et \textsc{HeapSort}, auparavant proche de \textsc{MergeSort}, est devenu un peu plus lent.\par
+	Pour des très grands tableaux (\(\SI{1000000}{}\) d'éléments), on constate que l'algorithme \textsc{InsertionSort} n'est plus du tout efficace. L'algorithme \textsc{QuickSort}, bien que son temps d'exécution soit encore raisonnable, perd également de sa rapidité. Le plus efficace est \textsc{MergeSort}, suivi par \textsc{HeapSort}, qui est deux fois plus lent, mais néanmoins dans le même ordre de grandeur.
+	\subsubsection*{Comparaison des algorithmes à leur complexité théorique}
+	Tous les tableaux étant générés de manière aléatoire, on peut se baser sur la complexité moyenne pour une première comparaison.\par
+	\begin{table}[!h]
+		\centering
+		\begin{tabular}{l|c|c|c}
+			Algorithme & Pire & Moyenne & Meilleure\\
+			\hline
+			\hline
+			\texttt{InsertionSort} & \(\Theta\left(n^{2}\right)\) & \(\Theta\left(n^{2}\right)\) & \(\Theta\left(n\right)\)\\
+			\hline
+			\texttt{QuickSort} & \(\Theta\left(n^2\right)\) & \(\Theta\left(n\log n\right)\) & \(\Theta\left(n\log n\right)\)\\
+			\hline
+			\texttt{MergeSort} & \(\Theta\left(n\log n\right)\) & \(\Theta\left(n\log n\right)\) & \(\Theta\left(n\log n\right)\)\\
+			\hline
+			\texttt{HeapSort} & \(\Theta\left(n\log n\right)\) & \(\Theta\left(n\log n\right)\) & \(\Theta\left(n\log n\right)\)\\
+			\hline
+		\end{tabular}
+		\caption{Complexité théorique des algorithmes vus au cours.}
+		\label{table:complexity}
+	\end{table}
+	Tous les algorithmes ont une complexité moyenne de l'ordre de \(n\log n\), excepté \textsc{InsertionSort} qui est de l'ordre de \(n^{2}\). Les résultats obtenus confirment bien ces complexités: les temps d'exécution de \textsc{QuickSort}, \textsc{MergeSort} et \textsc{HeapSort} restent fort proches l'un de l'autre (sans oublier qu'on ne tient pas compte d'une possible constante multiplicative devant le $n \log n$), tandis que ceux de \textsc{InsertionSort} s'écartent de plus en plus de ces derniers.
+	\section{Un nouvel algorithme de tri: \texttt{OtherSort}}
+	\subsection{Pseudo-code de l'algorithme}
+	Le pseudo-code du nouvel algorithme \textsc{OtherSort} est donné à la figure \ref{fig:pseudo_code_other_sort}.
+	\begin{figure}[!h]
+		\centering
+		\setlength{\fboxsep}{3mm}
+		\setlength{\fboxrule}{1.5pt}
+		\fcolorbox[rgb]{0, 0, 0}{0.95, 0.95, 0.95}{
+			\parbox{0.9\textwidth}{
+				\begin{codebox}
+        			\Procname{\(\textsc{OtherSort}\left(A, p, r\right)\)}
+        			\li \(size = r - p + 1\)
+        			\li \If \(size > 1\)
+        			\li \Do \If \(A\left[p\right] > A\left[r\right]\)
+        			\li \Do \(tmp = A\left[q\right]\)
+        			\li \(A\left[q\right] = A\left[p\right]\)
+        			\li \(A\left[p\right] = tmp\)
+        			\End
+        			\li \If \(size > 2\)
+        			\li \Do \(t = size / 3\)
+        			\li \(\textsc{OtherSort}\left(A, p, r - t\right)\)
+        			\li \(\textsc{OtherSort}\left(A, p + t, r\right)\)
+        			\li \(\textsc{OtherSort}\left(A, p, r - t\right)\)
+        			\End
+        			\End
+    		    \end{codebox}
+    		}
+		}
+		\caption{Pseudo-code de l'algorithme \textsc{OtherSort}.}
+		\label{fig:pseudo_code_other_sort}
+	\end{figure}
+	\subsection{L'algorithme est-il correct?}
+	Une première solution consiste à tester concrètement l'algorithme. En affichant les tableaux avant et après son exécution, on constate que ceux-ci sont correctement triés. Cependant, il est impossible d'envisager tous les cas avec des tests concrets, c'est pourquoi une preuve formelle par récursion est fournie.\par
+	
+	\subsubsection*{Preuve par récursion}
+	Pour commencer, on montre que l'algorithme est correct pour les cas de base suivants: \(n = 0, 1, 2\). Par \og correct\fg{}, on entend qu'il fournit en sortie la séquence triée qui lui a été fourni en entrée.\par
+	Si la taille du tableau est \(0\) ou \(1\), l'algorithme n'effectue aucune opération, ce dernier étant trivialement trié. Si le tableau est de taille 2, l'algorithme se contente de trier les deux éléments par une simple comparaison et un échange de position si nécessaire. Le tableau renvoyé est alors bien trié.\par
+	On suppose maintenant que l'algorithme est correct pour toute taille de tableau inférieure à \(n\). On va montrer qu'il l'est également pour un tableau de taille \(n\), et ce par logique.\par
+	L'algorithme va procéder à trois appels récursifs de lui-même pour des sous-tableaux ayant une taille \(\lceil\frac{2n}{3}\rceil\). Ces tableaux ayant une taille strictement inférieure à \(n\), l'algorithme va les trier correctement.\par
+	Il reste à montrer que ces trois tris successifs vont bien mener au tri du tableau initial.\par
+	Pour cela, on divise le tableau de départ en trois segments appelés A, B et C. Le premier appel va se charger de trier A et B, le second va trier B et C et le dernier va trier A et B une seconde fois (les tableaux étant mis à jour avant le tri suivant).\par
+	La définition de l'algorithme assure que la zone B est au moins aussi étendue que les deux zones extrêmes (voir sous-point ci-dessous). Dès lors, le premier appel va stocker dans B tous les éléments de A et B qui devront se trouver dans C à la fin de l'appel initial. Le second appel va placer ces éléments dans C. B étant au moins aussi étendu que C et A, on est certain que tous les éléments de C s'y trouveront, et correctement triés après cet appel récursif. B va alors emmagasiner tous les éléments de C qui doivent se trouver dans A, et les y placer lors du dernier appel. C étant trié lors du second appel, et A et B l'étant après le troisième, on est donc certain que l'algorithme a correctement trié le tableau de taille \(n\).\par
+	L'algorithme étant correct pour des tableaux de taille 0, 1 et 2, et $mod(\frac{2n}{3})\in\{0,1,2\}$, on est assuré que toutes les tailles de tableau supérieures se rapporteront bien à ces trois cas de base, et donc que l'algorithme est correct pour toute taille de tableau \(> 0\).
+	\subsubsection*{Preuve que B est au moins autant étendu que A et C}
+	On distingue 3 cas : la taille du tableau peut s'exprimer comme $3^k$, $3^k + 1$ ou $3^k + 2$. La définition de l'algorithme assurant que, si le tableau initial n'est pas un multiple de 3, les sous-tableaux auront une taille arrondie à l'entier supérieur, permet d'écrire : 
+	\begin{align*}
+	    3^k &\rightarrow |A| = k \quad; \quad |B| = k  \quad; \quad |C| = k \\
+	    3^k + 1 &\rightarrow |A| = k  \quad;  \quad |B| = k + 1  \quad; \quad |C| = k \\
+	    3^k + 2 &\rightarrow |A| = k  \quad; \quad |B| = k + 2  \quad; \quad |C| = k
+	\end{align*}
+	Avec |X| le nombre d'éléments dans la section X. On voit donc bien que B est au moins aussi étendu que A et C.
+	\subsection{L'algorithme est-il stable? En place?}
+	\subsubsection*{Stabilité}
+	La seule opération susceptible de modifier les positions d'éléments dans le tableau est l'échange du premier et dernier élément du sous-tableau traité, si nécessaire, à chaque appel de l'algorithme. L'inégalité présente dans la condition comparant ces deux éléments étant stricte, si deux éléments sont égaux, ils ne seront pas échangés.\par
+	L'algorithme est donc stable puisqu'il conserve l'ordre relatif des éléments égaux.
+	\subsubsection*{En place}
+	Mise à part l'allocation mémoire du tableau de taille \(n\), la seule opération demandant une allocation supplémentaire est l'échange entre le premier élément et le dernier élément, si nécessaire, du tableau. Au vu de la complexité en espace, discutée par après, on constate que, même dans le pire cas, l'algorithme n'utilisera pas plus de mémoire que celle utilisée pour stocker le tableau à trier.\par
+	L'algorithme est donc en place puisqu'il modifie directement le tableau qu'il est en train de trier, sans passer pas des structures de données intermédiaires.
+	\subsection{Complexité en temps: analyse expérimentale}
+	Afin de comparer ce nouvel algorithme à ceux étudiés précédemment, une nouvelle colonne a été ajoutée au tableau \ref{table:tab_time_1}.\par
+	\begin{table}[!h]
+	    \centering
+	    \begin{tabular}{|c|c|c|c|c|>{\columncolor[RGB]{230,230,230}}c|}
+	        \hline
+	        \textbf{N} & \texttt{InsertionSort} & \texttt{QuickSort} & \texttt{MergeSort} & \texttt{HeapSort} & \texttt{OtherSort}\\
+	        \hline
+	        \hline
+	        \(\SI{10}{}\) & \(\SI{0.000003}{}\) & \(\SI{0.000004}{}\) & \(\SI{0.000004}{}\) & \(\SI{0.000005}{}\) & \(\SI{0.000004}{}\)\\
+	        \(\SI{100}{}\) & \(\SI{0.000017}{}\) & \(\SI{0.000023}{}\) & \(\SI{0.000030}{}\) & \(\SI{0.000019}{}\) & \(\SI{0.001731}{}\)\\\
+	        \(\SI{1000}{}\) & \(\SI{0.001576}{}\) & \(\SI{0.000226}{}\) & \(\SI{0.000292}{}\) & \(\SI{0.000395}{}\) & \(\SI{1.485837}{}\)\\
+	        \(\SI{10000}{}\) & \(\SI{0.117356}{}\) & \(\SI{0.002145}{}\) & \(\SI{0.002234}{}\) & \(\SI{0.003090}{}\) & \(\SI{927.139057}{}\)\\
+	        \(\SI{100000}{}\) & \(\SI{11.675235}{}\) & \(\SI{0.058665}{}\) & \(\SI{0.023543}{}\) & \(\SI{0.037855}{}\) & \(\SI{X}{}\)\\
+	        \(\SI{1000000}{}\) & \(\SI{1177.404141}{}\) & \(\SI{4.462740}{}\) & \(\SI{0.267726}{}\) & \(\SI{0.496849}{}\) & \(\SI{X}{}\)\\
+	        \hline
+	    \end{tabular}
+	    \caption{Comparaison des temps d'exécution, en secondes, de l'algorithme \textsc{OtherSort} avec les autres algorithmes étudiés précédemment.}
+	\end{table}
+	Du à un temps de calcul trop long, les résultats pour un tableau de \(\SI{100000}{}\) et \(\SI{1000000}{}\) d'éléments n'ont pas été fournis.\par
+	Ce nouvel algorithme est plus long que tous les autres, et cela peu importe la taille de tableau. Pour de petits tableaux (\(N = \SI{10}{}\)), l'écart n'est pas significatif. Dès une taille de \(\SI{100}{}\), l'écart devient important, et pour de grands tableaux (plus de \(\SI{100000}{}\)), l'algorithme devient inutilisable.
+	\subsection{Complexité en temps et en espace: analyse théorique}
+	\subsubsection*{Complexité en temps}
+	Afin de prouver la complexité en temps, une preuve par induction est fournie.\par
+	Soit les \(\SI{3}{}\) cas de base: le tableau est de taille \(\SI{0}{}\), le tableau est de taille \(\SI{1}{}\) et le tableau est de taille \(\SI{2}{}\). Dans les trois cas, l'algorithme n'effectue que des comparaisons et échanges de valeurs; des opérations dont le coût est une constante:
+	\begin{align*}
+	    T\left(0\right) &= C_0\\
+	    T\left(1\right) &= C_1\\
+	    T\left(2\right) &= C_2\\
+	\end{align*}
+	Si le tableau est de taille supérieure ou égale à \(\SI{3}{}\), il sera partitionné et trié \(\SI{3}{}\) fois, chaque tri triant deux tiers du tableau. En considérant toujours les opérations de comparaison comme ayant un coût constant, la relation de récurrence s'écrit:
+	\begin{displaymath}
+	    T\left(n\right) = 3T\left(\dfrac{2n}{3}\right) + C_3
+	\end{displaymath}
+	En remplaçant successivement le membre de droite par l'expression ci-dessus, on obtient
+	\begin{align*}
+	    T\left(n\right) &= 3T\left(\dfrac{2n}{3}\right) + C_3\\
+	    &= 3\left[3T\left(\dfrac{4n}{9}\right) + C_4\right] + C_3\\
+	    &= 3^2\left[3T\left(\dfrac{8n}{27}\right) + C_5\right] + C_4 + C_3\\
+	    &= ...\\
+	    &= 3^k T\left[\left(\dfrac{2}{3}\right)^k n\right] + C
+	\end{align*}
+	Cette dernière expression étant générale, elle doit également convenir aux cas de base. En prenant l'argument de T égal à 1, on doit donc obtenir un coût constant. C'est le cas si
+	\begin{displaymath}
+	    \left(\dfrac{2}{3}\right)^k n = 1\Leftrightarrow k = \log_{\frac{2}{3}}\dfrac{1}{n}
+	\end{displaymath}
+	En ayant la valeur de \(k\), on trouve la complexité:
+	\begin{align*}
+	    T\left(n\right) &= 3^{\log_{\frac{2}{3}}\frac{1}{n}} + C\\
+	    &= 3^{-\log_{\frac{2}{3}}n}\\
+	    &= 3^{\frac{\log_3 n}{\log_3 \frac{2}{3}}}\\
+	    &= n^{\frac{\log 3}{\log \frac{2}{3}}}\\
+	    &\approx n^{2.7}
+	\end{align*}
+	La complexité est donc \(O\left(n^{2.7}\right)\).\par
+	L'algorithme travaillant de la même façon, peu importe le tableau fourni, cette complexité est à la fois celle des meilleur, moyen et pire cas.
+	\subsubsection*{Complexité en espace}
+	Pour un tableau de taille \(n\), il faut allouer \(n\) emplacements mémoire. L'opération d'échange de deux éléments dans l'algorithme requiert l'allocation d'un emplacement mémoire supplémentaire (pour la variable \texttt{tmp}). Aucune autre structure de données tierce n'est utilisée.\par
+	La complexité en espace est donc \(O\left(n + 1\right) = O\left(n\right)\) (et est même $\Theta(n)$). 
+	\subsection{Conclusion}
+	Au vu des complexités obtenues et des comparaisons faites avec les autres algorithmes, \textsc{OtherSort} n'est pas un algorithme de tri efficace. Pour de petits tableaux, son inefficacité n'est pas significative, mais sa complexité étant exponentielle, son utilisation devient vite impossible.
+\end{document}

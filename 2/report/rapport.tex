@@ -1,0 +1,300 @@
+\documentclass[a4paper, 12pt]{article}
+
+\newcommand{\languages}{english, french}
+
+\input{include/head.tex}
+
+%%%%%%%%%%%%%%%%%%%
+
+\title{Projet 2 - Filtre médian}
+\newcommand{\subtitle}{Structure de données et algorithmes}
+\author{
+	Maxime \textsc{Meurisse}\\Valentin \textsc{Vermeylen}\\
+}
+\newcommand{\context}{2\ieme{} année de Bachelier Ingénieur Civil}
+\date{Année académique 2017-2018}
+
+%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+	\newgeometry{margin = 2.5cm}
+	\makeatletter
+	\begin{titlepage}
+		\begin{minipage}[t][0.425\textheight][t]{\textwidth}
+			\begin{center}
+				\includegraphics[height=0.15\textheight]{resources/pdf/logo-uliege.pdf}
+				\vfill
+				{\huge \textsc{Université de Liège}}
+				\vfill
+			\end{center}
+		\end{minipage}
+		\vfill
+		\begin{minipage}{\textwidth}
+			\hspace{6pt}
+			\begin{mdframed}[linewidth = 2pt, innertopmargin = 12pt, innerbottommargin = 12pt, leftline = false, rightline = false]
+				\begin{center}
+					{\huge \bfseries \@title}
+				\end{center}
+			\end{mdframed}
+			\hspace{6pt}
+		\end{minipage}
+		\vfill
+		\begin{minipage}[b][0.425\textheight][t]{\textwidth}
+			\begin{center}
+				{\LARGE \subtitle}
+				\vfill
+				{\large \@author\space}
+				\vfill
+				{\large \context \\[6pt] \@date}
+			\end{center}
+		\end{minipage}
+	\end{titlepage}
+	\makeatother
+	\restoregeometry
+	\section{Analyse théorique}
+	\subsection{Variante basée sur le tri}
+	\label{subsec:subsec_tri}
+	Le pseudo-code de la fonction \textsc{mqUpdate} dans le cas du tri est donné à la figure \ref{fig:pseudo_code_tri}. La fonction \textsc{swap} utilisée permet d'échanger les positions de deux éléments d'un tableau.\par
+	\begin{figure}[!ht]
+		\centering
+		\setlength{\fboxsep}{3mm}
+		\setlength{\fboxrule}{1.5pt}
+		\fcolorbox[rgb]{0, 0, 0}{0.95, 0.95, 0.95}{
+			\parbox{0.9\textwidth}{
+				\begin{codebox}
+        			\Procname{\(\textsc{mqUpdate}\left(mq, value\right)\)}
+        			\li \(i = 1\)
+        			\li \While \(mq.sorted[i]\neq mq.circular[mq.start]\)
+        			\li \Do \(i = i + 1\);
+        			\End
+        			\li \(mq.sorted[i] = value\)
+        			\li \(mq.circular\left[mq.start\right] = value\)
+        			\li \(mq.start = \left(mq.start + 1\right) \% mq.size\)
+        			\li \If \(i > 1\)
+        			\li \Then \If \(mq.sorted[i-1] > mq.sorted[i]\)
+        			\li \Then \For \(j = i\) \Downto \(2\)
+        			\li \Do \If \(mq.sorted[j-1] > mq.sorted[j]\)
+        			\li \Then \textsc{swap}\(\left(mq.sorted[j-1], mq.sorted[j]\right)\)
+        			\End
+        			\End
+        			\End
+        			\End
+        			\li \If \(i < mq.size\)
+        			\li \Then \If \(mq.sorted[i+1] < mq.sorted[i]\)
+        			\li \Then \For \(j = i\) \To \(mq.size-1\)
+        			\li \Do \If \(mq.sorted[j+1] < mq.sorted[j]\)
+        			\li \Then \textsc{swap}\(\left(mq.sorted[j+1], mq.sorted[j]\right)\)
+        			\End
+        			\End
+        			\End
+        			\End
+    		    \end{codebox}
+    		}
+		}
+		\caption{Pseudo-code de la fonction \textsc{mqUpdate} dans le cas du tri.}
+		\label{fig:pseudo_code_tri}
+	\end{figure}
+	\subsubsection{Complexité en temps dans le pire cas}
+	Dans le pire cas, la nouvelle valeur insérée dans le tableau \texttt{sorted} n'est pas à sa bonne position et doit être amenée à l'autre bout du tableau. Dans ce cas, celle-ci devra faire \(w-1\) échanges de position. Toutes les opérations étant \(O\left(1\right)\), la complexité en temps sera \(O\left(w-1\right) = O\left(w\right)\).\par
+	\subsubsection{Complexité en temps dans le meilleur cas}
+	Dans le meilleur cas, la nouvelle valeur est insérée à la première position du tableau \texttt{sorted} et est déjà à sa bonne position. L'algorithme ne rentrera dans aucune boucle, la complexité en temps sera donc \(O\left(1\right)\).
+	\subsection{Variante basée sur le \textsc{QuickSort}}
+	Dans cette variante, la fonction \textsc{mqUpdate} fait appel à la fonction \textsc{adaptedQuicksort} après avoir mis à jour les valeurs du tableau \texttt{sorted} de la structure \texttt{mq}.\par
+	Le pseudo-code de la fonction \textsc{adaptedQuicksort} est donné à la figure \ref{fig:pseudo_code_quicksort}. La fonction \textsc{swap} est identique à celle présentée au point \ref{subsec:subsec_tri} et la fonction \textsc{partition} est celle utilisée pour la version classique du \textsc{QuickSort}, implémentée pour le projet 1.\par
+	\begin{figure}[!ht]
+		\centering
+		\setlength{\fboxsep}{3mm}
+		\setlength{\fboxrule}{1.5pt}
+		\fcolorbox[rgb]{0, 0, 0}{0.95, 0.95, 0.95}{
+			\parbox{0.9\textwidth}{
+				\begin{codebox}
+        			\Procname{\textsc{mqUpdate}\(\left(mq, value\right)\)}
+        			\li \(mq.circular\left[mq.start\right] = value\)
+        			\li \(mq.start = \left(mq.start + 1\right) \% mq.size\)
+        			\li \For \(i = 1\) \To \(mq.size\)
+        			\li \Do \(mq.sorted\left[i\right] = mq.circular\left[\left(mq.start + i\right) \% mq.size\right]\)
+        			\End
+        			\li \textsc{adaptedQuickSort}\((mq, 1, mq.size)\)
+        		    \End
+    		    \end{codebox}
+    		}
+		}
+		\caption{Pseudo-code de la fonction \textsc{mqUpdate} dans le cas de la variante du quicksort.}
+		\label{fig:pseudo_code_quicksort_mqupdate}
+	\end{figure}
+	\begin{figure}[!ht]
+		\centering
+		\setlength{\fboxsep}{3mm}
+		\setlength{\fboxrule}{1.5pt}
+		\fcolorbox[rgb]{0, 0, 0}{0.95, 0.95, 0.95}{
+			\parbox{0.9\textwidth}{
+				\begin{codebox}
+        			\Procname{\(\textsc{adaptedQuicksort}\left(mq, first, last\right)\)}
+        			\li \If \(first < last\)
+        			\li \Then \(posPivot = \textsc{partition}\left(mq.sorted, first, last\right)\)
+        			\li \(posMedian = mq.size / 2\)
+        			\li \If \(posPivot\neq posMedian\)
+        			\li \Then \If \(posPivot > posMedian\)
+        			\li \Then \textsc{adaptedQuicksort}\(\left(mq, first, posPivot - 1\right)\)
+        			\li \Else
+        			\li \textsc{adaptedQuicksort}\(\left(mq, posPivot + 1, last\right)\)
+        			\End
+        			\End
+        			\End
+    		    \end{codebox}
+    		}
+		}
+		\caption{Pseudo-code de la fonction \textsc{adaptedQuicksort}.}
+		\label{fig:pseudo_code_quicksort}
+	\end{figure}
+	\subsubsection{Complexité en temps dans le pire cas}
+	Dans tous les cas, il faut charger les valeurs dans le tableau \texttt{sorted}. Cette étape est \(O\left(w\right)\).\par
+	La fonction \textsc{partition}, comme vu au cours, est \(\Theta\left(n\right)\) avec \(n\) le nombre d'éléments dans la tableau à partitionner.\par
+	Dans le pire cas, il va falloir appeler \(w\) fois \textsc{adaptedQuicksort}, les pivots étant alternativement les derniers et premiers éléments de chaque nouveau tableau, de sorte que le pivot ne devienne la médiane qu'au dernier élément.\par
+	La formule de la complexité de \textsc{adaptedQuicksort} étant identique, dans le pire cas, à celle de \textsc{QuickSort} dans le pire cas (\(T\left(n\right) = T\left(n-1\right) + c\)), on trouve que \textsc{adaptedQuicksort} est \(O\left(w^2\right)\) dans le pire cas.\par
+	La fonction \textsc{mqUpdate} a donc une complexité en temps de \(O\left(w^2\right)\) dans le pire cas.
+	\subsubsection{Complexité en temps dans le meilleur cas}
+	Dans le meilleur cas, on boucle quand même puis on ne rentre dans le \textsc{adaptedQuicksort} qu'une fois, on a donc une complexité de \(O\left(w\right)\) due à la boucle.
+	\subsection{La fonction \textsc{heapReplace}}
+	Le pseudo-code de la fonction \textsc{heapReplace} est donné à la figure \ref{fig:pseudo_code_heap_replace}. Les fonctions \textsc{maxHeapify} et \textsc{minHeapify} sont identiques à celles vues au cours.
+	\begin{figure}[!ht]
+		\centering
+		\setlength{\fboxsep}{3mm}
+		\setlength{\fboxrule}{1.5pt}
+		\fcolorbox[rgb]{0, 0, 0}{0.95, 0.95, 0.95}{
+			\parbox{0.9\textwidth}{
+				\begin{codebox}
+        			\Procname{\(\textsc{heapReplace}\left(heap, toReplace, value\right)\)}
+        			\li \(pos = toReplace.index\)
+        			\li \(heap.referenceArray\left[pos\right].value = value\)
+        			\li \For \(i = heap.nbElements/2\) \To \(i = 1\)
+        			\li \Do \If \(heap.type\)
+        			\li \Then \textsc{maxHeapify}\(\left(heap.referenceArray, i, heap.nbElements\right)\)
+        			\li \Else
+        			\li \textsc{minHeapify}\(\left(heap.referenceArray, i, heap.nbElements\right)\)
+        			\End
+        			\End
+    		    \end{codebox}
+    		}
+		}
+		\caption{Pseudo-code de la fonction \textsc{heapReplace}.}
+		\label{fig:pseudo_code_heap_replace}
+	\end{figure}
+	\subsubsection{Complexité en temps dans le pire cas}
+	Dans le pire cas, l'élément placé se trouve en sommet de tas et doit se retrouver dans une feuille pour respecter la propriété d'ordre du tas (ou l'inverse selon le type du tas et les valeurs présentes).\par
+	Un tas de \(n\) éléments possède une hauteur de \(\left\lfloor\log_2 n\right\rfloor\), qu'il soit complet ou non étant donné qu'il est représenté par un arbre binaire complet.\par
+	Ainsi, dans le pire cas, pour un noeud, on a \(\log n\) appels récursifs à \textsc{maxHeapify} (ou \textsc{minHeapify}). Ces opérations font appel à la méthode \textsc{swap}. Dans le pire cas, celle-ci effectue une recherche linéaire dans tout le tableau pour trouver les positions des éléments à échanger, elle est donc \(O\left(n\right)\). La méthode \textsc{heapReplace} appelant \(O\left(n\right)\) fois les méthodes \textsc{maxHeapify} (ou \textsc{minHeapify}) récursivement, on a donc une complexité finale de \(O\left(n^2\log n\right)\) dans le pire cas.
+	\paragraph{Remarque} Cette complexité élevée pourrait être améliorée en évitant d'appeler autant de fois les méthodes \textsc{max-minHeapify}. On pourrait en effet se contenter d'échanger la valeur du noeud avec son parent ou avec un enfant s'il en possède et que la propriété d'ordre du tas n'est pas vérifiée. Tout le reste du tableau respectant déjà la propriété d'ordre des tas, on n'aurait qu'à effectuer au plus $\log n$ swaps sans parcourir tout la tableau. La complexité dans le pire cas deviendrait ainsi $O(n \log n)$ et non plus $O(n^2\log n)$ et dans le meilleur cas, on atteindrait une complexité de $O(1)$. Néanmoins, cette implémentation nous provoquait des erreurs dans le fichier de sortie et nous n'avions plus le temps de la débugger. 
+	\subsubsection{Complexité en temps dans le meilleur cas}
+	Dans le meilleur cas, la valeur est insérée de telle manière que, si on a affaire à un tas-max, elle est plus grande ou égale au plus grand de ses fils et plus petite ou égale à son parent (si elle en a).\par
+	La fonction \textsc{heapReplace} est dans ce cas \(O\left(n\right)\) car on ne doit pas l'échanger avec quelque élément que ce soit. La fonction ne fait que remplacer la valeur précédente et vérifier que la propriété d'ordre du tas est bien respectée (en appelant, dans une boucle, les fonctions \textsc{max-minHeapify} qui ne font aucune opération puisque la valeur est déjà bien placée dans le tas.), ce qui est le cas initialement dans le meilleur cas.\par
+	Le raisonnement est similaire dans le cas d'un tas-min.\par
+	La complexité au meilleur cas de \textsc{heapReplace} est donc \(O\left(n\right)\).
+	\subsection{Variante à base de tas}
+	Le pseudo-code de la fonction \textsc{mqUpdate} dans le cas des tas est donné à la figure \ref{fig:pseudo_code_mq_update_heap}.
+	\begin{figure}[!ht]
+		\centering
+		\setlength{\fboxsep}{3mm}
+		\setlength{\fboxrule}{1.5pt}
+		\fcolorbox[rgb]{0, 0, 0}{0.95, 0.95, 0.95}{
+			\parbox{0.9\textwidth}{
+			    \scriptsize
+				\begin{codebox}
+        			\Procname{\(\textsc{mqUpdate}\left(mq, value\right)\)}
+        			\li \(r = mq.circular[mq.start]\)
+        			\li \(done = false\);
+        			\li \For \(i = 0\) \To \textsc{heapSize}\((mq.maxHeap)\)
+        			\li \Do \If \textsc{heapGet}\((mq.maxHeap, \textsc{referenceArrayIndex}(mq.referenceMaxHeap, i)) == r\)
+        			\li \Then \textsc{heapReplace}\((mq.maxHeap, \textsc{referenceArrayIndex}(mq.referenceMaxHeap, i), value)\)
+        			\li done = true;
+        			\li \Break
+        			\End
+        			\End
+        			\li \If \((!done)\)
+        			\li \Then \For \(i = 0\) \To \textsc{heapSize}\((mq.minHeap)\)
+        			\li \Do \If \textsc{heapGet}\((mq.minHeap, \textsc{referenceArrayIndex}(mq.referenceMinHeap, i)) == r\)
+        			\li \Then \textsc{heapReplace}\((mq.minHeap, \textsc{referenceArrayIndex}(mq.referenceMinHeap, i), value)\)
+        			\li \Break
+        			\End
+        			\End
+        			\End
+        			\li \If \(\textsc{heapTop}(mq.maxHeap) > \textsc{heapTop}(mq.minHeap)\)
+        			\li \Then \(k = 0, m = 0\)
+        			\li \(topMax = \textsc{heapTop(mq.maxHeap}, topMin = \textsc{heapTop(mq.minHeap}\)
+        			\li \While \(\textsc{heapGet}(mq.maxHeap, \textsc{referenceArrayIndex}(mq.referenceMaxHeap, k))\neq topMax\)
+        			\li \Do k = k + 1;
+        			\End
+        			\li \While \(\textsc{heapGet}(mq.minHeap, \textsc{referenceArrayIndex}(mq.referenceMinHeap, m))\neq topMin\)
+        			\li \Do m = m + 1;
+        			\End
+        			\li \textsc{heapReplace}\((mq.maxHeap, \textsc{referenceArrayIndex}(mq.referenceMaxHeap, i), topMin)\)
+        			\li \textsc{heapReplace}\((mq.minHeap, \textsc{referenceArrayIndex}(mq.referenceMinHeap, i), topMax)\)
+        			\End
+        			\li \(mq.circular\left[mq.start\right] = value\)
+        			\li \(mq.start = \left(mq.start + 1\right) \% mq.size\)
+        			\End
+    		    \end{codebox}
+    		}
+		}
+		\caption{Pseudo-code de la fonction \textsc{mqUpdate} dans le cas des tas.}
+		\label{fig:pseudo_code_mq_update_heap}
+	\end{figure}
+	\subsubsection{Analyse des complexités}
+	Presque toutes les opérations sont \(O\left(1\right)\), à l'exception de \textsc{heapReplace} qui est \(O\left(n^2\log n\right)\) ou \(O\left(n\right)\) selon le pire ou meilleur cas.\par
+	Dans le meilleur cas, on ne boucle qu'une fois, on ne doit rien échanger (on remplace par la même valeur au sommet du tas, par exemple) et on ne doit pas échanger avec l'autre tas. La complexité en temps est donc \(O\left(n\right)\).\par
+	Dans le pire cas, on parcourt les deux tas, la valeur à remplacer est la dernière du deuxième tas, elle doit tout remonter et tout remonter dans le second tas. On reste néanmoins en \(O\left(n^2\log n\right)\).\par
+	Chaque tas contenant une moitié des éléments du filtre de taille \(w\), dans chaque expression de la complexité, \(n\) peut être remplacé par \(\frac{w}{2}\).
+	\subsection{La fonction \textsc{sigMedian}}
+	Toutes les opérations sont \(O\left(1\right)\), à l'exception de \textsc{mqCreate} qui est la complexité de création de \texttt{mq}, et de la recherche de la médiane ainsi que \textsc{mqUpdate}, qui sont calculées \(N-w\) fois.\par
+	Dans le cas d'un N suffisamment élevé, c'est la complexité de \textsc{mqUpdate} qui est décisive pour le calcul de la complexité et non celle de \textsc{mqCreate} qui ne fait qu'assigner 2 tableaux. Les complexités en temps pour \textsc{sigMedian} vaudront donc $(N-w) *$ les complexités de \textsc{mqUpdate} dans les différentes implémentations et pour les différents cas.\par
+	Les complexités de \textsc{mqUpdate} ont été calculées ci-avant (et sont reprises dans le tableau \ref{tab:complexity}), et les complexités de \textsc{mqMedian} sont \(O\left(1\right)\) pour tous les cas.\par
+	\begin{table}[!h]
+		\centering
+		\begin{tabular}{|l|c|c|c|}
+		    \hline
+			Algorithme & Pire & Meilleure\\
+			\hline
+			\hline
+			\texttt{SortedMedianQueue} & \(O\left(n\right)\) & \(O\left(1\right)\)\\
+			\hline
+			\texttt{QuickMedianQueue} & \(O\left(n^2\right)\) & \(O\left(1\right)\)\\
+			\hline
+			\texttt{HeapReplace} & \(O\left(n^2\log n\right)\) & \(O\left(n\right)\)\\
+			\hline
+			\texttt{HeapMedianQueue} & \(O\left(n^2\log n\right)\) & \(O\left(n\right)\)\\
+			\hline
+		\end{tabular}
+		\caption{Résumé des complexités des différentes implémentations.}
+		\label{tab:complexity}
+	\end{table}
+	\section{Analyse empirique}
+	\subsection{Comparaison des différentes implémentations}
+	Afin de comparer empiriquement les différentes implémentations, les algorithmes ont été testés sur le signal \texttt{temperatures23.03.17\_23.03.18.sgl} pour différentes tailles \(w\) de filtre.\par
+	Les temps reportés dans le tableau \ref{tab:tab_comp_empir} sont des moyennes de \(\SI{10}{}\) temps et s'expriment en secondes.\par
+	\begin{table}[!ht]
+	    \centering
+	    \begin{tabular}{|c|c|c|c|c|}
+	        \hline
+	        \(\bm{w}\) & \textsc{Naive} & \textsc{Sorted} & \textsc{Quick} & \textsc{Heap}\\
+	        \hline
+	        \hline
+	        5 & \(\SI{0.001134}{}\) & \(\SI{0.000391}{}\) & \(\SI{0.001116}{}\) & \(\SI{0.001972}{}\)\\
+	        25 & \(\SI{0.009255}{}\) & \(\SI{0.001142}{}\) & \(\SI{0.006579}{}\) & \(\SI{0.005979}{}\)\\
+	        105 & \(\SI{0.054978}{}\) & \(\SI{0.003854}{}\) & \(\SI{0.029643}{}\) & \(\SI{0.021637}{}\)\\
+	        505 & \(\SI{0.325518}{}\) & \(\SI{0.015914}{}\) & \(\SI{0.136352}{}\) & \(\SI{0.086637}{}\)\\
+	        1005 & \(\SI{0.669930}{}\) & \(\SI{0.031882}{}\) & \(\SI{0.275488}{}\) & \(\SI{0.181638}{}\)\\
+	        2005 & \(\SI{1.242557}{}\) & \(\SI{0.055246}{}\) & \(\SI{0.555251}{}\) & \(\SI{0.360648}{}\)\\
+	        5005 & \(\SI{1.833140}{}\) & \(\SI{0.067319}{}\) & \(\SI{0.998436}{}\) & \(\SI{0.531199}{}\)\\
+	        \hline
+	    \end{tabular}
+	    \caption{Comparaison des temps d'exécution, en secondes, des différentes implémentations sur un signal pour différentes tailles \(w\) de filtre.}
+	    \label{tab:tab_comp_empir}
+	\end{table}
+	À première vue, l'algorithme \textsc{SortedMedianQueue} semble le meilleur pour toutes les tailles de filtres. Les algorithmes \textsc{QuickMedianQueue} et \textsc{HeapMedianQueue} (bien que celui-ci pourrait être amélioré tel que précisé dans une remarque précédemment) se suivent d'assez près et semblent être efficace, bien qu'ils soient tout de même beaucoup plus lents que \textsc{Sorted}. L'algorithme \textsc{NaiveMedianQueue} est de loin le plus inefficace.\par 
+	Pour de grandes tailles de signaux, l'implémentation basée sur le \textsc{Quicksort} fournit des temps qui augmentent de manière plus importante que dans le cas des autres implémentations. Cela peut être dû au fait que le \textsc{QuickSort} se comporte moins bien s'il doit trier des tableaux contenant peu de valeurs différentes et, sur 5000 valeurs, on retrouvera de nombreuses fois les mêmes températures.
+	\subsection{Comparaison avec les résultats théoriques}
+	Au vu des résultats, on voit que la variante basée sur le quicksort augmente presque linéairement, ce qui doit correspondre au cas moyen ($n\log n$). La méthode naïve semble augmenter de manière un peu plus que linéaire et prend initialement un temps plus élevée que les autres pour fournir ses valeurs car la totalité du tableau est rechargé à chaque itération. Néanmoins, elle utilise la fonction de tri \textsc{qsort} qui est souvent implémenté grâce à un quicksort, donc de \(n\log n\), ce qui est légèrement supérieur à \(n\left(\text{on a ici remplacé \(w\) par \(n\)}\right)\).\par 
+	La méthode basée sur l'utilisation de tas semble aller à l'encontre de sa complexité théorique en exhibant un comportement presque linéaire, ce qui se rapprocherait du meilleur cas. Cela peut se comprendre car le pire cas est fort spécifique et a bien moins de probabilité de se produire qu'un cas moyen, qui serait proche du meilleur cas (échange d'un seul ou de deux noeuds par exemple).\par 
+	Finalement, la méthode basée sur le tri fournit les meilleurs résultats, ce qui est parfaitement compréhensible au vu de sa complexité théorique (\(O(n)\) dans le pire cas et \(O(1)\) dans le meilleur).\par 
+	\paragraph{Remarque} Il serait possible d'implémenter la méthode basée sur les tas de manière à obtenir une complexité de $\log n$ mais nous n'y sommes pas parvenu tout en conservant l'opacité des structures (les recherches linéaires rendent cela impossible).
+\end{document}

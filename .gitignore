@@ -1,10 +1,6 @@
+##########
+# System #
+##########
+
+# macOS
 .DS_Store
-
-/Projet 1/Rapport/*
-!/Projet 1/Rapport/Rapport.pdf
-
-/Projet 2/Rapport/*
-!/Projet 2/Rapport/Rapport.pdf
-
-/Projet 3/Rapport/*
-!/Projet 3/Rapport/Rapport.pdf

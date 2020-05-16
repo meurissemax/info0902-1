@@ -1,0 +1,183 @@
+%%%%% Pseudo-code
+
+\usepackage{clrscode3e}
+
+%%%%% Tools
+
+\usepackage{comment}
+\usepackage{lipsum}
+\usepackage{xstring}
+
+%%%%% Document
+
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage[parfill]{parskip}
+
+\geometry{paper=a4paper,top=3.5cm,bottom=2.5cm,right=2.5cm,left=2.5cm}
+
+%%%%% Text
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+
+\newlength{\mytextsize}
+\makeatletter
+\setlength{\mytextsize}{\f@size pt}
+\makeatother
+
+%%%%% Languages
+
+\usepackage[\languages]{babel}
+
+% english
+
+\addto\captionsenglish{\def\figurename{Figure}}
+\addto\captionsenglish{\def\tablename{Table}}
+
+\newcommand{\st}{\text{s.t.}}
+
+\IfStrEq{\languagename}{english}{
+	\newcommand{\lgpreamble}{Preamble}
+}
+
+% french
+
+\frenchbsetup{StandardLists=true}
+
+\addto\captionsfrench{\def\figurename{Figure}}
+\addto\captionsfrench{\def\tablename{Tableau}}
+\addto\captionsfrench{\def\proofname{Preuve}}
+
+\newcommand{\tq}{\text{t.q.}}
+\newcommand{\cad}{c.-à-d. }
+\newcommand{\Cad}{C.-à-d. }
+
+\IfStrEq{\languagename}{french}{
+	\newcommand{\lgpreamble}{Préambule}
+}
+
+%%%%% Styles
+
+\usepackage[skip=12pt]{caption}
+\usepackage{float}
+\usepackage{mdframed}
+\usepackage{enumitem}
+\usepackage{eurosym}
+\usepackage{color}
+\usepackage{colortbl}
+
+%%%%% Mathematics
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{bm}
+\usepackage{esint}
+
+\newcommand{\fact}[1]{#1!}
+\newcommand{\deriv}{\mathrm{d}}
+\DeclareMathOperator{\tr}{tr}
+
+%%%%% SI units
+
+\usepackage[squaren,Gray,cdot]{SIunits}
+\usepackage{sistyle}
+\SIdecimalsign{,}
+
+%%%%% Chemistry
+
+\usepackage[version=4]{mhchem}
+
+%%%%% Table & Figure
+
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{multicol}
+\newcolumntype{M}[1]{>{\centering\arraybackslash}m{#1}}
+%\setlength\extrarowheight{0em}
+\renewcommand{\arraystretch}{1.3}
+
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, positioning}
+\usepackage{graphics}
+\usepackage{graphicx}
+\pgfplotsset{axis on top, compat = 1.3}
+%\setlength{\belowcaptionskip}{0pt}
+
+%%%%%% Theorems and Definitions
+
+\usepackage{amsthm}
+\usepackage{thmtools}
+
+\IfStrEq{\languagename}{english}{
+	\newcommand{\lgthm}{Theorem}
+	\newcommand{\lglem}{Lemma}
+	\newcommand{\lgprop}{Proposition}
+	\newcommand{\lgdefn}{Definition}
+	\newcommand{\lghyp}{Hypothesis}
+	\newcommand{\lgquest}{Question}
+	\newcommand{\lgansw}{Answer}
+	\newcommand{\lgexpl}{Example}
+	\newcommand{\lgrmk}{Remark}
+	\newcommand{\lgnote}{Note}
+	\newcommand{\lgtip}{Tip}
+}
+
+\IfStrEq{\languagename}{french}{
+	\newcommand{\lgthm}{Théorème}
+	\newcommand{\lglem}{Lemme}
+	\newcommand{\lgprop}{Proposition}
+	\newcommand{\lgdefn}{Définition}
+	\newcommand{\lghyp}{Hypothèse}
+	\newcommand{\lgquest}{Question}
+	\newcommand{\lgansw}{Réponse}
+	\newcommand{\lgexpl}{Exemple}
+	\newcommand{\lgrmk}{Remarque}
+	\newcommand{\lgnote}{Note}
+	\newcommand{\lgtip}{Conseil}
+}
+
+\theoremstyle{plain}
+\newtheorem{thm}{\lgthm}[section]
+\newtheorem{lem}{\lglem}[section]
+\newtheorem{prop}{\lgprop}[section]
+
+\theoremstyle{definition}
+\newtheorem{defn}{\lgdefn}[section]
+\newtheorem{hyp}{\lghyp}[section]
+\newtheorem{quest}{\lgquest}[]
+
+\declaretheorem[
+name=\lgansw,
+qed={\lower-0.3ex\hbox{$\triangle$}},
+within=quest
+]{answ}
+
+\declaretheorem[
+name=\lgexpl,
+qed={\lower-0.3ex\hbox{$\triangle$}},
+within=section
+]{expl}
+
+\theoremstyle{remark}
+\newtheorem*{rmk}{\lgrmk}
+\newtheorem*{note}{\lgnote}
+\newtheorem*{tip}{\lgtip}
+
+\begingroup
+\makeatletter
+\@for\theoremstyle:=definition,remark,plain\do{%
+	\expandafter\g@addto@macro\csname th@\theoremstyle\endcsname{%
+		\addtolength\thm@preskip\parskip
+	}%
+}
+\endgroup
+
+%%%% Others
+
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+%%%%%%%%%%%%%%%%%%%
